@@ -5,6 +5,8 @@ import { AssociateService } from '../../services/associate/associate.service';
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { UpdateBatchPayload } from './update-batch-payload';
+import { UpdateAssociateComponent } from '../update-associate/update-associate.component';
 
 
 @Component({
@@ -18,9 +20,12 @@ export class ViewAssociateComponent implements OnInit {
   newAssociates: Associate[];
   private associateSubject: BehaviorSubject<Associate>;
   public associate: Observable<Associate>;
+  public updatePayload!: UpdateBatchPayload;
+  public counter: number;
 
   activeId: number;
   managerId: number;
+  batchId: number;
 
   private toggle = true;
 
@@ -34,6 +39,7 @@ export class ViewAssociateComponent implements OnInit {
   ngOnInit(): void {
     this.managerId = parseInt(sessionStorage.getItem('managerId'));
     this.getAllAssociates(this.managerId);
+    this.counter = 0;
   }
 
   public toggleAssociateView() {
@@ -62,7 +68,6 @@ export class ViewAssociateComponent implements OnInit {
 
   open() {
     const modalRef = this.modalService.open(SwotComponent);
-    modalRef.componentInstance.name = 'CreateSwot';
     console.log(this.activeId);
     modalRef.componentInstance.passedId = this.activeId;
   }
@@ -98,4 +103,9 @@ export class ViewAssociateComponent implements OnInit {
     title.innerHTML = 'View New Associates';
   }
 
+  updateBatch(): void {
+    const modalRef = this.modalService.open(UpdateAssociateComponent);
+    modalRef.componentInstance.associateId = this.activeId;
+    modalRef.componentInstance.curBatchId = this.batchId;
+  }
 }

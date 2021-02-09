@@ -20,16 +20,25 @@ export class SwotService {
 
   constructor(private http :HttpClient) { }
 
-
-
+/**
+ * This creates a swot object to be sent to the backend
+ * @param swotAnalysis - the swot to be added to the database
+ */
   addSwot(swotAnalysis: Swot): Observable<any> {
-
+    console.log("this should be a swot");
     console.log(swotAnalysis)
     return this.http.post<any>(`${environment.BASE_URL}swot/create`, swotAnalysis, this.httpOptions)
       .pipe(
-        tap((newSwotAnalysis: Swot) => console.log(newSwotAnalysis)),
-        catchError(this.handleError<any>('addSwot'))
+        tap((newSwotAnalysis: Swot) => console.log(newSwotAnalysis)), //captures the response and handles it if its a response
+        catchError(this.handleError<any>('addSwot')) //this handles if it is an error
       )
+  }
+  /**
+   * This forms an http request intended to delete a swot.
+   * @param swotId - the id of the swot to be deleted
+   */
+  deleteSwot(swotId: number): Observable<any> {
+    return this.http.delete<any>(`${environment.BASE_URL}swot/delete/${swotId}`);
   }
 
   private handleError<T>(operation = 'operation', result?: T) {
@@ -57,8 +66,9 @@ export class SwotService {
   updateItem(swotItem: SwotItem): Observable<SwotItem> {
     let swotItemDTO = {
       id: swotItem.id,
-      content: swotItem.content,
+      name: swotItem.name,
       type: swotItem.type,
+      note: swotItem.note,
       swot: {
         id: swotItem.swotAnalysisId
       }
@@ -72,8 +82,9 @@ export class SwotService {
   addItem(swotItem: SwotItem): Observable<SwotItem> {
     let swotItemDTO = {
       id: swotItem.id,
-      content: swotItem.content,
+      name: swotItem.name,
       type: swotItem.type,
+      note: swotItem.note,
       swot: {
         id: swotItem.swotAnalysisId
       }
